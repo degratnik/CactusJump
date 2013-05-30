@@ -60,9 +60,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
 	private int score = 0;
 	private PhysicsWorld physicsWorld;
 	
-	private float playerPosX = 0;
-	
-	
 	//XML parsing
 	private static final String TAG_ENTITY = "entity";
 	private static final String TAG_ENTITY_ATTRIBUTE_X = "x";
@@ -140,80 +137,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
 		//set back
 		this.setBackground(autoParallaxBackground);
 
-		// Calculate the coordinates for the face, so its centered on the camera. 
-		final float playerX = MainActivity.CR_X + playerPosX;
-		final float playerY = 0;
-
-		// Create two spritess and add it to the scene. 
-		final AnimatedSprite player = new AnimatedSprite(playerX, playerY, rm.mPlayerTextureRegion, vbom);
-		player.setScaleCenterY(rm.mPlayerTextureRegion.getHeight());
-		player.setScale(4);
-		player.setAnchorCenter(0, 0);
-		player.animate(new long[]{400, 400, 400}, 3, 5, true);
-		
-		this.registerUpdateHandler(new TimerHandler(1 / 20.0f, true, new ITimerCallback()
-	    {
-	        @Override
-	        public void onTimePassed(final TimerHandler pTimerHandler)
-	        {
-	        	ResourceManager rm = resourcesManager;
-	        	player.setPosition(MainActivity.CR_X + playerPosX, 0);
-	        }
-	    }));
-		
-		final AnimatedSprite enemy = new AnimatedSprite(playerX - 80, playerY, ResourceManager.getInstance().mEnemyTextureRegion, vbom);
-		enemy.setScaleCenterY(rm.mEnemyTextureRegion.getHeight());
-		enemy.setScale(2);
-		enemy.setAnchorCenter(0, 0);
-		enemy.animate(new long[]{200, 200, 200}, 3, 5, true);
-		enemy.registerEntityModifier(new LoopEntityModifier(new JumpModifier(5, playerX - 80, playerX - 80, playerY, playerY + 160, 160)));
-		final AnimatedSprite enemy2 = new AnimatedSprite(playerX - 160, playerY, rm.mEnemyTextureRegion, vbom);
-		enemy2.setScaleCenterY(rm.mEnemyTextureRegion.getHeight());
-		enemy2.setScale(2);
-		enemy2.setAnchorCenter(0, 0);
-		enemy2.animate(new long[]{200, 200, 200}, 3, 5, true);
-		enemy2.registerEntityModifier(new LoopEntityModifier(new RotationModifier(5, 0, 360)));
-		
-		//camera.setChaseEntity(enemy);
-		//camera.setBounds(0, 0, 2000, 2000);
-		//camera.setBoundsEnabled(true);
-
-		this.attachChild(player);
-		this.attachChild(enemy);
-		this.attachChild(enemy2);
-		
-		/*
-		final Text centerText = new Text(100, 40, rm.font, "Hello AndEngine!\nYou can even have multilined text!", new TextOptions(HorizontalAlign.CENTER), vbom);
-		final Text leftText = new Text(100, 170, rm.font, "Also left aligned!\nLorem ipsum dolor sit amat...", new TextOptions(HorizontalAlign.LEFT), vbom);
-		final Text rightText = new Text(100, 300, rm.font, "And right aligned!\nLorem ipsum dolor sit amat...", new TextOptions(HorizontalAlign.RIGHT), vbom);
-
-		this.attachChild(centerText);
-		this.attachChild(leftText);
-		this.attachChild(rightText);
-		*/
-		
-	    
 	    fpsCounter = new FPSCounter();
 	    engine.registerUpdateHandler(fpsCounter);
 	     
-        /*
-	    final Text fpsText2 = new Text(300, 200, rm.font, "FPS2:", "FPS: XXXXXXXXXXXXXXXXXXXXXX".length(), vbom);
-
-	    this.attachChild(fpsText2);
-	     
-
-	    
-	    this.registerUpdateHandler(new TimerHandler(1 / 20.0f, true, new ITimerCallback()
-	    {
-	        @Override
-	        public void onTimePassed(final TimerHandler pTimerHandler)
-	        {
-	            fpsText2.setText("FPS: " + fpsCounter.getFPS());
-	        }
-	    }));
-	    */
-
-        
     }
     
     private void createHUD()
@@ -225,77 +151,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         scoreText.setAnchorCenter(0, 0);    
         scoreText.setText("Score: 0");
         gameHUD.attachChild(scoreText);
-        
 
-	    
-		final Rectangle left = new Rectangle(60, 200, 60, 60, vbom)
-	    {
-	    	private boolean touched = false;
-	    	
-	        public boolean onAreaTouched(TouchEvent touchEvent, float X, float Y)
-	        {
-	            if (touchEvent.isActionDown())
-	            {
-	            	touched = true;
-
-	            }
-	            if (touchEvent.isActionUp())
-	            {
-	            	touched = false;
-	            }
-	            return true;
-	        };
-	        
-	        @Override
-	    	protected void onManagedUpdate(float pSecondsElapsed)
-	    	{
-	    		if (touched)
-	    		{
-	            	Log.i("MainActivity", "Left pSecondsElapsed = " + pSecondsElapsed);
-	            	playerPosX -= 20*pSecondsElapsed;
-	    		}
-	    		super.onManagedUpdate(pSecondsElapsed);
-	    	}
-	    };
-	    
-	    final Rectangle right = new Rectangle(camera.getWidth() - 120, 200, 60, 60, vbom)
-	    {
-	    	private boolean touched = false;
-	    	
-	        public boolean onAreaTouched(TouchEvent touchEvent, float X, float Y)
-	        {
-	            if (touchEvent.isActionDown())
-	            {
-	            	touched = true;
-
-	            }
-	            if (touchEvent.isActionUp())
-	            {
-	            	touched = false;
-	            }
-	            return true;
-	        };
-	        
-	        @Override
-	    	protected void onManagedUpdate(float pSecondsElapsed)
-	    	{
-	    		if (touched)
-	    		{
-	            	Log.i("MainActivity", "Right pSecondsElapsed = " + pSecondsElapsed);
-	            	playerPosX += 10*pSecondsElapsed;
-	    		}
-	    		super.onManagedUpdate(pSecondsElapsed);
-	    	}
-	    };
-	    left.setColor(Color.BLUE);
-	    left.setAnchorCenter(0, 0);  
-	    right.setColor(Color.RED);
-	    right.setAnchorCenter(0, 0);
-	    
-	    gameHUD.registerTouchArea(left);
-	    gameHUD.registerTouchArea(right);
-	    gameHUD.attachChild(left);
-	    gameHUD.attachChild(right);
 	    
 	    final Text fpsText = new Text(100, 20, resourcesManager.font, "FPS:", "FPS: XXXXXXXXXXXXXXXXXXXXXX".length(), vbom);
 	    fpsText.setAnchorCenter(0, 0);
