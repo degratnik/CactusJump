@@ -8,29 +8,18 @@ import org.game.cactusjump.SceneManager.SceneType;
 
 import android.app.Activity;
 
-
-
-/**
- * @author Mateusz Mysliwiec
- * @author www.matim-dev.com
- * @version 1.0
- */
 public abstract class BaseScene extends Scene
 {
-    //---------------------------------------------
-    // VARIABLES
-    //---------------------------------------------
-    
+    //global variables that are useful for any scene. Will be initialized in constructor.
     protected Engine engine;
     protected Activity activity;
     protected ResourceManager resourcesManager;
     protected VertexBufferObjectManager vbom;
     protected Camera camera;
     
-    //---------------------------------------------
-    // CONSTRUCTOR
-    //---------------------------------------------
-    
+    /**
+     * Constructor. Init variables and call createScene.
+     */
     public BaseScene()
     {
         this.resourcesManager = ResourceManager.getInstance();
@@ -39,17 +28,23 @@ public abstract class BaseScene extends Scene
         this.vbom = resourcesManager.vbom;
         this.camera = resourcesManager.camera;
         createScene();
-    }
-    
-    //---------------------------------------------
-    // ABSTRACTION
-    //---------------------------------------------
-    
+    }  
+
+    /**
+     * Create scene.
+     */
     public abstract void createScene();
-    
+    /**
+     * Called if back is pressed.
+     */
     public abstract void onBackKeyPressed();
-    
+    /**
+     * Return scene type.
+     * @return SceneType
+     */
     public abstract SceneType getSceneType();
-    
+    /**
+     * Destroy scene.
+     */
     public abstract void disposeScene();
 }
